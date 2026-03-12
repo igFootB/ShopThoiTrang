@@ -55,4 +55,28 @@ public class GioHangController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @DeleteMapping("/remove/{variantId}")
+    public ResponseEntity<?> removeFromCart(@PathVariable Long variantId) {
+        try {
+            Long userId = getCurrentUserId();
+            gioHangService.removeFromCart(userId, variantId);
+            return ResponseEntity.ok(Map.of("message", "Đã xoá sản phẩm khỏi giỏ hàng"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage() != null ? e.getMessage() : "Lỗi không xác định"));
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateCartItem(@RequestBody Map<String, Object> payload) {
+        try {
+            Long userId = getCurrentUserId();
+            Long variantId = Long.valueOf(payload.get("variantId").toString());
+            Integer soLuong = Integer.valueOf(payload.get("soLuong").toString());
+            gioHangService.updateCartItem(userId, variantId, soLuong);
+            return ResponseEntity.ok(Map.of("message", "Cập nhật giỏ hàng thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage() != null ? e.getMessage() : "Lỗi không xác định"));
+        }
+    }
 }

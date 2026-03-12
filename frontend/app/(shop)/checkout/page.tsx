@@ -7,13 +7,9 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useCart, type CartItem } from "@/components/providers/CartProvider";
 import { formatVND } from "@/lib/utils";
-import { ChevronRight, Truck, Shield, CreditCard, Banknote, MapPin, Check, Plus } from "lucide-react";
+import { ChevronRight, Truck, Shield, CreditCard, Banknote, MapPin, Check, Plus, X } from "lucide-react";
 
-/* ─── Mock cart fallback ─── */
-const MOCK_CART: CartItem[] = [
-  { id: 1, productId: 101, tenSanPham: "Áo Polo Nam Form Vừa Thoải Mái", hinhAnh: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=200&auto=format&fit=crop", gia: 450000, variantId: 2, size: "M", mauSac: "Trắng", soLuong: 2 },
-  { id: 2, productId: 103, tenSanPham: "Quần Jeans Nam Dáng Suông", hinhAnh: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=200&auto=format&fit=crop", gia: 750000, variantId: 22, size: "30", mauSac: "Xanh đậm", soLuong: 1 },
-];
+
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -23,6 +19,12 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  /* Voucher */
+  const [voucherCode, setVoucherCode] = useState("");
+  const [appliedVoucher, setAppliedVoucher] = useState<any>(null);
+  const [voucherError, setVoucherError] = useState<string | null>(null);
+  const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
 
   /* Form giao hàng */
   const [hoTen, setHoTen] = useState("");
@@ -74,18 +76,42 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!loading && !isBuyNow) {
-      if (cartItems.length > 0) {
-        setItems(cartItems);
-        setTotal(cartTotal);
-      } else {
-        setItems(MOCK_CART);
-        setTotal(MOCK_CART.reduce((s, i) => s + i.gia * i.soLuong, 0));
-      }
+      setItems(cartItems);
+      setTotal(cartTotal);
     }
   }, [loading, cartItems, cartTotal, isBuyNow]);
 
   const shippingFee = total >= 500000 ? 0 : 30000;
-  const grandTotal = total + shippingFee;
+  
+  const discountAmount = appliedVoucher 
+    ? (appliedVoucher.loaiGiamGia === "PERCENT" 
+        ? (total * appliedVoucher.giaTriGiam) / 100 
+        : appliedVoucher.giaTriGiam) 
+    : 0;
+  
+  const actualDiscount = Math.min(total, discountAmount);
+  const grandTotal = total - actualDiscount + shippingFee;
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) return;
+    setIsApplyingVoucher(true);
+    setVoucherError(null);
+    try {
+      const res = await api.get(`/public/coupons/check?code=${voucherCode.trim()}&total=${total}`);
+      setAppliedVoucher(res.data);
+      setVoucherCode(""); // clear input
+    } catch (err: any) {
+      setVoucherError(err.response?.data?.message || "Mã giảm giá không hợp lệ");
+      setAppliedVoucher(null);
+    } finally {
+      setIsApplyingVoucher(false);
+    }
+  };
+
+  const removeVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,12 +144,16 @@ export default function CheckoutPage() {
         return;
       }
 
-      const payload = {
+      const payload: any = {
         addressId: finalAddressId,
         paymentMethod,
         phiVanChuyen: shippingFee,
         items: items.map((i) => ({ variantId: i.variantId, soLuong: i.soLuong })),
       };
+
+      if (appliedVoucher) {
+        payload.couponId = appliedVoucher.id;
+      }
       
       const res = await api.post("/orders/checkout", payload);
       
@@ -304,12 +334,58 @@ export default function CheckoutPage() {
                     <span className="text-gray-400">Tạm tính</span>
                     <span className="text-white font-bold">{formatVND(total)}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  
+                  {/* Phần nhập Voucher */}
+                  <div className="pt-2">
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={voucherCode} 
+                        onChange={(e) => setVoucherCode(e.target.value)} 
+                        placeholder="Nhập mã giảm giá..." 
+                        className="flex-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white py-2 px-3 focus:outline-none focus:border-[#b91c1c] uppercase"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={handleApplyVoucher}
+                        disabled={isApplyingVoucher || !voucherCode.trim()}
+                        className="bg-white/10 hover:bg-white/20 disabled:opacity-50 text-white px-4 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
+                      >
+                        {isApplyingVoucher ? "Đang áp dụng..." : "Áp dụng"}
+                      </button>
+                    </div>
+                    {voucherError && <p className="text-red-400 text-xs mt-2">{voucherError}</p>}
+                    
+                    {appliedVoucher && (
+                      <div className="mt-3 flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+                        <div>
+                          <p className="text-emerald-400 text-xs font-bold flex items-center gap-1.5 uppercase tracking-wider">
+                            <Check size={14} /> {appliedVoucher.maGiamGia}
+                          </p>
+                          <p className="text-gray-400 text-[10px] mt-0.5">
+                            Đã giảm {appliedVoucher.loaiGiamGia === "PERCENT" ? `${appliedVoucher.giaTriGiam}%` : formatVND(appliedVoucher.giaTriGiam)}
+                          </p>
+                        </div>
+                        <button type="button" onClick={removeVoucher} className="text-gray-500 hover:text-red-400 p-1 transition-colors">
+                          <X size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between text-sm pt-2">
                     <span className="text-gray-400">Phí vận chuyển</span>
                     <span className={`font-bold ${shippingFee===0 ? "text-emerald-400" : "text-white"}`}>
                       {shippingFee===0 ? "Miễn phí" : formatVND(shippingFee)}
                     </span>
                   </div>
+
+                  {actualDiscount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Giảm giá</span>
+                      <span className="font-bold text-emerald-400">- {formatVND(actualDiscount)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="border-t border-white/10 pt-4 mt-4">

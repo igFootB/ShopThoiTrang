@@ -112,6 +112,7 @@ public class DonHangController {
             List<Map<String, Object>> items = orderItems.stream().map(item -> {
                 Map<String, Object> map = new LinkedHashMap<>();
                 map.put("id", item.getId());
+                map.put("productId", item.getBienTheSanPham().getSanPham().getId());
                 map.put("tenSanPham", item.getTenSanPhamLucMua());
                 map.put("size", item.getSizeLucMua());
                 map.put("mauSac", item.getMauSacLucMua());

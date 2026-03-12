@@ -26,7 +26,8 @@ public class DanhGiaService {
             throw new RuntimeException("Bạn không có quyền đánh giá đơn hàng này");
         }
 
-        if (!"DELIVERED".equals(order.getTrangThai())) {
+        String trangThai = order.getTrangThai();
+        if (!"DELIVERED".equalsIgnoreCase(trangThai) && !"Hoàn thành".equalsIgnoreCase(trangThai) && !"Đã giao".equalsIgnoreCase(trangThai)) {
             throw new RuntimeException("Bạn chỉ có thể đánh giá sau khi đơn hàng đã được giao thành công");
         }
 

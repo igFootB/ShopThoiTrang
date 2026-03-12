@@ -41,11 +41,13 @@ public class DanhGiaController {
             return ResponseEntity.ok(Map.of("message", "Đánh giá thành công!", "reviewId", review.getId()));
         } catch (RuntimeException e) {
             // Theo yêu cầu trả về 403 nếu chưa mua/không có quyền
-            if (e.getMessage().contains("không có quyền") || e.getMessage().contains("chưa mua")) {
+            if (e.getMessage() != null && (e.getMessage().contains("không có quyền") || e.getMessage().contains("chưa mua"))) {
                 return ResponseEntity.status(403).body(Map.of("message", e.getMessage()));
             }
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage() != null ? e.getMessage() : "Bad Request"));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Lỗi: " + e.getMessage()));
         }
     }

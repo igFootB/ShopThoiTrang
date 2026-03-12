@@ -7,7 +7,7 @@ import { useMemo, useState, useEffect } from "react";
 import { api, publicApi } from "@/lib/api";
 import { formatVND } from "@/lib/utils";
 import { useCart } from "@/components/providers/CartProvider";
-import { Heart, ShoppingCart, Truck, RotateCcw, Shield, ChevronRight, Minus, Plus, Check, Zap } from "lucide-react";
+import { Heart, ShoppingCart, Truck, RotateCcw, Shield, ChevronRight, Minus, Plus, Check, Zap, Star } from "lucide-react";
 
 type ImageItem = {
   id: number;
@@ -32,6 +32,18 @@ type ProductDetail = {
   variants: VariantItem[];
 };
 
+type ReviewItem = {
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+};
+
+type ProductReviews = {
+  averageRating: number;
+  reviews: ReviewItem[];
+};
+
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const { increaseCartCount, refreshCartCount } = useCart();
@@ -45,6 +57,9 @@ export default function ProductDetailPage() {
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  const [reviewsData, setReviewsData] = useState<ProductReviews | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -60,8 +75,21 @@ export default function ProductDetailPage() {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        setReviewsLoading(true);
+        const res = await publicApi.get<ProductReviews>(`/public/reviews/product/${productId}`);
+        setReviewsData(res.data);
+      } catch {
+        // bỏ qua lỗi nếu không tải được review
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
     if (!Number.isNaN(productId)) {
       fetchProductDetail();
+      fetchReviews();
     }
   }, [productId]);
 
@@ -447,6 +475,52 @@ export default function ProductDetailPage() {
 
           </div>
         </div>
+
+        {/* ── ĐÁNH GIÁ SẢN PHẨM ── */}
+        <div className="mt-16 sm:mt-24">
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-widest">Đánh giá từ khách hàng</h2>
+            {reviewsData && reviewsData.reviews && reviewsData.reviews.length > 0 && (
+              <div className="flex items-center gap-1.5 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="text-sm font-bold text-amber-500">{reviewsData.averageRating.toFixed(1)}</span>
+                <span className="text-xs text-amber-500/70">({reviewsData.reviews.length})</span>
+              </div>
+            )}
+          </div>
+
+          {reviewsLoading ? (
+             <div className="text-gray-500 text-sm">Đang tải đánh giá...</div>
+          ) : !reviewsData || !reviewsData.reviews || reviewsData.reviews.length === 0 ? (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+              <p className="text-gray-400 text-sm">Chưa có đánh giá nào cho sản phẩm này.</p>
+            </div>
+          ) : (
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               {reviewsData.reviews.map((review, idx) => (
+                 <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-6 transition-all hover:bg-white/10">
+                   <div className="flex justify-between items-start mb-4">
+                     <div>
+                       <p className="font-bold text-white mb-1">{review.userName || "Khách hàng ẩn danh"}</p>
+                       <div className="flex gap-1 text-amber-400">
+                         {Array.from({ length: 5 }).map((_, i) => (
+                           <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-amber-400" : "text-gray-600 fill-transparent"}`} />
+                         ))}
+                       </div>
+                     </div>
+                     <span className="text-xs text-gray-500">
+                       {review.createdAt ? new Date(review.createdAt).toLocaleDateString("vi-VN") : ""}
+                     </span>
+                   </div>
+                   <p className="text-sm text-gray-300 leading-relaxed italic">
+                     "{review.comment}"
+                   </p>
+                 </div>
+               ))}
+             </div>
+          )}
+        </div>
+        
       </div>
     </div>
   );

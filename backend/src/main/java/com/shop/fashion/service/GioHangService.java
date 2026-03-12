@@ -6,4 +6,6 @@ import com.shop.fashion.dto.response.CartResponse;
 public interface GioHangService {
     CartResponse getCartByUserId(Long userId);
     void addToCart(Long userId, AddToCartRequest request);
+    void removeFromCart(Long userId, Long variantId);
+    void updateCartItem(Long userId, Long variantId, Integer quantity);
 }

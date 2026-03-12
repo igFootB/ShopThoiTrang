@@ -6,7 +6,7 @@ import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
 import HeroSlider from "@/components/ui/HeroSlider";
 import HighlightCollection from "@/components/ui/HighlightCollection";
-import { publicProductsApi, publicCategoriesApi, publicLookbookApi } from "@/lib/api";
+import { publicProductsApi, publicCategoriesApi } from "@/lib/api";
 
 // Helper: loại bỏ sản phẩm trùng ID
 function dedupProducts(arr: any[]): any[] {
@@ -18,7 +18,6 @@ export default function HomePage() {
   const [namProducts, setNamProducts] = useState<any[]>([]);
   const [nuProducts, setNuProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [lookbooks, setLookbooks] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch Bán chạy (Sản phẩm mới nhất)
@@ -62,11 +61,6 @@ export default function HomePage() {
         publicProductsApi.getProducts({ keyword: "nữ", limit: 4 }).then(res => setNuProducts(res.data.content || []));
       }
     }).catch(console.error);
-
-    // Fetch Lookbook
-    publicLookbookApi.getLookbooks({ limit: 6 }).then((res) => {
-      setLookbooks(res.data.content || []);
-    }).catch(console.error);
   }, []);
   return (
     <div className="bg-[#1c1c1c] w-full min-h-screen pb-24 text-white -mt-28">
@@ -74,20 +68,20 @@ export default function HomePage() {
       {/* ── 1. Hero Banner Slider ── */}
       <HeroSlider />
 
-      {/* ── 2. NEW COLLECTION (3 Hình) ── */}
+      {/* ── 2. NEW COLLECTION (2 Hình) ── */}
       <section className="w-full max-w-[1200px] mx-auto px-4 mt-6 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           <div className="flex flex-col items-center">
             <Link href="/category/nam" className="w-full aspect-[4/3] block overflow-hidden bg-[#222] relative group">
               <Image
                 src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=800&auto=format&fit=crop"
-                alt="New Collection Men"
+                alt="Thời Trang Nam"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </Link>
             <div className="mt-4 text-center">
-              <h3 className="text-sm font-semibold tracking-wide uppercase">NEW COLLECTION</h3>
+              <h3 className="text-sm font-semibold tracking-wide uppercase">THỜI TRANG NAM</h3>
               <Link href="/category/nam" className="text-xs text-[#b91c1c] italic mt-1 inline-block hover:underline">Xem ngay</Link>
             </div>
           </div>
@@ -95,28 +89,14 @@ export default function HomePage() {
             <Link href="/category/nu" className="w-full aspect-[4/3] block overflow-hidden bg-[#222] relative group">
               <Image
                 src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop"
-                alt="New Collection Women"
+                alt="Thời Trang Nữ"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </Link>
             <div className="mt-4 text-center">
-              <h3 className="text-sm font-semibold tracking-wide uppercase">NEW COLLECTION</h3>
+              <h3 className="text-sm font-semibold tracking-wide uppercase">THỜI TRANG NỮ</h3>
               <Link href="/category/nu" className="text-xs text-[#b91c1c] italic mt-1 inline-block hover:underline">Xem ngay</Link>
-            </div>
-          </div>
-          <div className="flex flex-col items-center">
-            <Link href="/category/nam" className="w-full aspect-[4/3] block overflow-hidden bg-[#222] relative group">
-              <Image
-                src="https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=800&auto=format&fit=crop"
-                alt="New Collection Shirts"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </Link>
-            <div className="mt-4 text-center">
-              <h3 className="text-sm font-semibold tracking-wide uppercase">NEW COLLECTION</h3>
-              <Link href="/category/nam" className="text-xs text-[#b91c1c] italic mt-1 inline-block hover:underline">Xem ngay</Link>
             </div>
           </div>
         </div>
@@ -244,56 +224,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Brand Separator & Mix/Match ── */}
-      <div className="w-full text-center mb-10">
-        <h2 className="text-xl md:text-2xl font-black tracking-widest uppercase">MIX & MATCH</h2>
-      </div>
-
-      {/* ── 5. Mix & Match ── */}
-      <section className="w-full max-w-[1200px] mx-auto px-4 mb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-          {lookbooks.length > 0 ? (
-            lookbooks.slice(0, 3).map((lbItem, idx) => (
-              <Link key={`lb-${lbItem.id || idx}`} href={`/lookbook/${lbItem.id}`} className="group block w-full aspect-[3/4] relative overflow-hidden bg-[#222]">
-                <Image
-                  src={lbItem.hinhAnh}
-                  alt={lbItem.tieuDe || `Mix & Match ${idx + 1}`}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </Link>
-            ))
-          ) : (
-            // Fallback content if no Lookbooks are provided by the API
-            <>
-              <Link href="/category/nam" className="group block w-full aspect-[3/4] relative overflow-hidden bg-[#222]">
-                <Image
-                  src="https://images.unsplash.com/photo-1490240989397-ff0b51eb6404?q=80&w=800&auto=format&fit=crop"
-                  alt="Mix & Match 1"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </Link>
-              <Link href="/category/nu" className="group block w-full aspect-[3/4] relative overflow-hidden bg-[#222]">
-                <Image
-                  src="https://images.unsplash.com/photo-1550614000-4b95d4edae10?q=80&w=800&auto=format&fit=crop"
-                  alt="Mix & Match 2"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </Link>
-              <Link href="/category/nam" className="group block w-full aspect-[3/4] relative overflow-hidden bg-[#222]">
-                <Image
-                  src="https://images.unsplash.com/photo-1594938291221-94f18cbb5660?q=80&w=800&auto=format&fit=crop"
-                  alt="Mix & Match 3"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </Link>
-            </>
-          )}
-        </div>
-      </section>
 
       {/* ── Brand Separator Blog ── */}
       <div className="w-full text-center mb-10">

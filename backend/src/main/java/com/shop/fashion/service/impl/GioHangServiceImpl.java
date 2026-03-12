@@ -107,4 +107,39 @@ public class GioHangServiceImpl implements GioHangService {
 
         chiTietGioHangRepository.save(item);
     }
+
+    @Override
+    @Transactional
+    public void removeFromCart(Long userId, Long variantId) {
+        GioHang cart = gioHangRepository.findByNguoiDungId(userId)
+                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại."));
+
+        ChiTietGioHang item = chiTietGioHangRepository.findByGioHangIdAndBienTheSanPhamId(cart.getId(), variantId)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không có trong giỏ hàng."));
+
+        chiTietGioHangRepository.delete(item);
+    }
+
+    @Override
+    @Transactional
+    public void updateCartItem(Long userId, Long variantId, Integer quantity) {
+        if (quantity <= 0) {
+            removeFromCart(userId, variantId);
+            return;
+        }
+
+        GioHang cart = gioHangRepository.findByNguoiDungId(userId)
+                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại."));
+
+        ChiTietGioHang item = chiTietGioHangRepository.findByGioHangIdAndBienTheSanPhamId(cart.getId(), variantId)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không có trong giỏ hàng."));
+
+        BienTheSanPham variant = item.getBienTheSanPham();
+        if (variant.getSoLuong() < quantity) {
+            throw new RuntimeException("Lỗi: Số lượng sản phẩm trong kho không đủ. Chỉ còn " + variant.getSoLuong() + " sản phẩm.");
+        }
+
+        item.setSoLuong(quantity);
+        chiTietGioHangRepository.save(item);
+    }
 }

@@ -19,7 +19,6 @@ const NAV_ITEMS = [
   { href: "/payments", label: "Quản lý Thanh toán", icon: "💳" },
   { href: "/reviews", label: "Đánh giá sản phẩm", icon: "⭐" },
   { href: "/banners", label: "Quản lý Banner", icon: "🖼️" },
-  { href: "/lookbooks", label: "Quản lý Lookbook", icon: "✨" },
   { href: "/accounts", label: "Quản lý Tài khoản", icon: "👥" },
   { href: "/vouchers", label: "Khuyến Mãi & Voucher", icon: "🎟️" },
 ];

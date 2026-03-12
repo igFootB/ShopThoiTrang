@@ -8,12 +8,7 @@ import { useCart, type CartItem } from "@/components/providers/CartProvider";
 import { formatVND } from "@/lib/utils";
 import { Minus, Plus, Trash2, ShoppingBag, ChevronRight, Truck, Shield, ArrowLeft } from "lucide-react";
 
-/* ─── Mock data fallback ─── */
-const MOCK_CART: CartItem[] = [
-  { id: 1, productId: 101, tenSanPham: "Áo Polo Nam Form Vừa Thoải Mái", hinhAnh: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=400&auto=format&fit=crop", gia: 450000, variantId: 2, size: "M", mauSac: "Trắng", soLuong: 2 },
-  { id: 2, productId: 103, tenSanPham: "Quần Jeans Nam Dáng Suông", hinhAnh: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=400&auto=format&fit=crop", gia: 750000, variantId: 22, size: "30", mauSac: "Xanh đậm", soLuong: 1 },
-  { id: 3, productId: 201, tenSanPham: "Đầm Xòe Nữ Dáng Dài Thanh Lịch", hinhAnh: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400&auto=format&fit=crop", gia: 850000, variantId: 42, size: "M", mauSac: "Đỏ", soLuong: 1 },
-];
+
 
 export default function CartPage() {
   const { fetchCartItems, cartItems, cartTotal } = useCart();
@@ -36,16 +31,11 @@ export default function CartPage() {
     load();
   }, [fetchCartItems]);
 
-  /* Sync với CartProvider hoặc fallback mock */
+  /* Sync với CartProvider */
   useEffect(() => {
     if (!loading) {
-      if (cartItems.length > 0) {
-        setItems(cartItems);
-        setTotal(cartTotal);
-      } else {
-        setItems(MOCK_CART);
-        setTotal(MOCK_CART.reduce((s, i) => s + i.gia * i.soLuong, 0));
-      }
+      setItems(cartItems);
+      setTotal(cartTotal);
     }
   }, [loading, cartItems, cartTotal]);
 
@@ -56,25 +46,25 @@ export default function CartPage() {
     setUpdatingId(item.id);
     try {
       await api.put("/cart/update", { variantId: item.variantId, soLuong: newQty });
-    } catch { /* fallback local */ }
-    setItems((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, soLuong: newQty } : i))
-    );
-    setTotal((prev) => prev + delta * item.gia);
-    setUpdatingId(null);
+      await fetchCartItems();
+    } catch (e) { 
+      console.error(e);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   /* Xoá sản phẩm */
-  const handleRemove = (item: CartItem) => {
+  const handleRemove = async (item: CartItem) => {
     setRemovingId(item.id);
-    setTimeout(async () => {
-      try {
-        await api.delete(`/cart/remove/${item.variantId}`);
-      } catch { /* ignore */ }
-      setItems((prev) => prev.filter((i) => i.id !== item.id));
-      setTotal((prev) => prev - item.gia * item.soLuong);
+    try {
+      await api.delete(`/cart/remove/${item.variantId}`);
+      await fetchCartItems();
+    } catch (e) {
+      console.error(e);
+    } finally {
       setRemovingId(null);
-    }, 300);
+    }
   };
 
   const shippingFee = total >= 500000 ? 0 : 30000;

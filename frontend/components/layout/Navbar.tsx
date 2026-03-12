@@ -24,11 +24,7 @@ const DEFAULT_NAV_LINKS: NavLink[] = [
   { label: "CỬA HÀNG", href: "/stores" },
 ];
 
-/* ─── Mock mini cart ─── */
-const MOCK_MINI_CART: CartItem[] = [
-  { id: 1, productId: 101, tenSanPham: "Áo Polo Nam Form Vừa Thoải Mái", hinhAnh: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=200&auto=format&fit=crop", gia: 450000, variantId: 2, size: "M", mauSac: "Trắng", soLuong: 1 },
-  { id: 2, productId: 103, tenSanPham: "Quần Jeans Nam Dáng Suông", hinhAnh: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=200&auto=format&fit=crop", gia: 750000, variantId: 22, size: "30", mauSac: "Xanh đậm", soLuong: 1 },
-];
+
 
 function UserAccountBadge({ isAuthenticated, user, logout, isTransparent }: { isAuthenticated: boolean; user: any; logout: () => void, isTransparent?: boolean }) {
   const [mounted, setMounted] = useState(false);
@@ -65,7 +61,7 @@ function UserAccountBadge({ isAuthenticated, user, logout, isTransparent }: { is
             </Link>
           )}
           <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5">Tài khoản</Link>
-          <Link href="/orders" className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5">Đơn hàng</Link>
+          <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5">Đơn hàng</Link>
           <button
             onClick={logout}
             className="flex items-center px-4 py-2 text-sm text-[#ff4d4f] hover:bg-white/5 w-full text-left mt-1 border-t border-white/10 pt-2"
@@ -186,24 +182,19 @@ export default function Navbar() {
     fetchNavCategories();
   }, []);
 
-  /* Sync data từ CartProvider hoặc fallback mock */
+  /* Sync data từ CartProvider */
   useEffect(() => {
-    if (cartItems.length > 0) {
-      setMiniCartItems(cartItems);
-      setMiniCartTotal(cartTotal);
-    } else if (isMiniCartOpen) {
-      setMiniCartItems(MOCK_MINI_CART);
-      setMiniCartTotal(MOCK_MINI_CART.reduce((s, i) => s + i.gia * i.soLuong, 0));
-    }
+    setMiniCartItems(cartItems);
+    setMiniCartTotal(cartTotal);
   }, [cartItems, cartTotal, isMiniCartOpen]);
 
   const handleRemoveItem = async (variantId: number, itemId: number) => {
     try {
       await api.delete(`/cart/remove/${variantId}`);
-    } catch { /* ignore */ }
-    setMiniCartItems((prev) => prev.filter((i) => i.id !== itemId));
-    const removed = miniCartItems.find((i) => i.id === itemId);
-    if (removed) setMiniCartTotal((prev) => prev - removed.gia * removed.soLuong);
+      await fetchCartItems();
+    } catch (e) { 
+      console.error(e);
+    }
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -242,7 +233,7 @@ export default function Navbar() {
               </button>
 
               <Link href="/" className="flex items-center">
-                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>JOHN HENRY</span>
+                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>GIA BAO STORE</span>
               </Link>
             </div>
 

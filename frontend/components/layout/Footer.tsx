@@ -9,7 +9,7 @@ export default function Footer() {
           
           {/* CỘT 1: COMPANY */}
           <div className="space-y-6">
-            <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-white">VỀ JOHN HENRY</h3>
+            <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-white">VỀ GIA BAO STORE</h3>
             <ul className="space-y-4 text-sm text-gray-400">
               <li><Link href="#" className="hover:text-white transition-colors">Câu chuyện thương hiệu</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Tin tức & Sự kiện</Link></li>
@@ -35,7 +35,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-gray-400">
               <li>Hotline mua hàng: <a href="tel:0906954368" className="text-white hover:text-gray-300 transition-colors">0906 954 368</a></li>
               <li>Hotline CSKH: <a href="tel:0906954368" className="text-white hover:text-gray-300 transition-colors">0906 954 368</a></li>
-              <li>Email: <a href="mailto:cskh@johnhenry.vn" className="text-white hover:text-gray-300 transition-colors">cskh@johnhenry.vn</a></li>
+              <li>Email: <a href="mailto:cskh@giabaostore.vn" className="text-white hover:text-gray-300 transition-colors">cskh@giabaostore.vn</a></li>
             </ul>
             <div className="pt-2">
               <h4 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Kết nối với chúng tôi</h4>
@@ -70,7 +70,7 @@ export default function Footer() {
 
         {/* COPYRIGHT */}
         <div className="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500 tracking-[0.1em] uppercase">
-          <p>© 2026 JOHN HENRY OFFICIAL. BẢN QUYỀN THUỘC VỀ JOHN HENRY.</p>
+          <p>© 2026 GIA BAO STORE. BẢN QUYỀN THUỘC VỀ GIA BAO STORE.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link href="#" className="hover:text-white transition-colors">Tích điểm</Link>
             <Link href="#" className="hover:text-white transition-colors">Khuyến mãi</Link>

@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { formatVND } from "@/lib/utils";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { Star } from "lucide-react";
+import toast from "react-hot-toast";
 
 type OrderItem = {
   id: number;
+  productId: number;
   tenSanPham: string;
   size: string;
   mauSac: string;
@@ -35,6 +38,8 @@ const STATUS_STYLES: Record<string, string> = {
   SHIPPED: "bg-shipped/20 text-shipped",
   DELIVERED: "bg-success/20 text-success",
   CANCELLED: "bg-error/20 text-error",
+  "Hoàn thành": "bg-success/20 text-success",
+  "Đã giao": "bg-success/20 text-success"
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -43,6 +48,8 @@ const STATUS_LABELS: Record<string, string> = {
   SHIPPED: "Dang giao",
   DELIVERED: "Da giao",
   CANCELLED: "Da huy",
+  "Hoàn thành": "Hoàn thành",
+  "Đã giao": "Đã giao"
 };
 
 export default function ProfilePage() {
@@ -63,6 +70,11 @@ export default function ProfilePage() {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
   const [orderDetails, setOrderDetails] = useState<Record<number, OrderItem[]>>({});
+
+  /* ── Reviews ── */
+  const [reviewModal, setReviewModal] = useState<{ isOpen: boolean; productId?: number; orderId?: number; productName?: string }>({ isOpen: false });
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   /* pre-fill profile from auth context */
   useEffect(() => {
@@ -134,6 +146,36 @@ export default function ProfilePage() {
       } catch {
         setOrderDetails((prev) => ({ ...prev, [orderId]: [] }));
       }
+    }
+  };
+
+  const handleSubmitReview = async () => {
+    if (!reviewModal.productId || !reviewModal.orderId) return;
+    if (reviewForm.rating < 1 || reviewForm.rating > 5) {
+      toast.error("Vui lòng chọn số sao hợp lệ");
+      return;
+    }
+    if (!reviewForm.comment.trim()) {
+      toast.error("Vui lòng nhập nội dung đánh giá");
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      await api.post("/reviews", {
+        productId: reviewModal.productId,
+        orderId: reviewModal.orderId,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+      });
+      toast.success("Đánh giá sản phẩm thành công!");
+      setReviewModal({ isOpen: false });
+      setReviewForm({ rating: 5, comment: "" });
+    } catch (error: any) {
+      console.error("Lỗi khi gửi đánh giá:", error.response?.data || error);
+      toast.error(error.response?.data?.message || "Lỗi khi gửi đánh giá");
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -300,8 +342,27 @@ export default function ProfilePage() {
                                     {item.size} / {item.mauSac}
                                   </td>
                                   <td className="py-2 text-center">{item.soLuong}</td>
-                                  <td className="py-2 text-right text-amber-600">
-                                    {formatVND(item.gia * item.soLuong)}
+                                  <td className="py-2 text-right">
+                                    <div className="flex flex-col items-end gap-2 text-amber-600">
+                                      <span>{formatVND(item.gia * item.soLuong)}</span>
+                                      {(order.trangThai === "DELIVERED" || order.trangThai === "Hoàn thành" || order.trangThai === "Đã giao") && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setReviewModal({
+                                              isOpen: true,
+                                              productId: item.productId,
+                                              orderId: order.id,
+                                              productName: item.tenSanPham
+                                            });
+                                            setReviewForm({ rating: 5, comment: "" });
+                                          }}
+                                          className="rounded border border-teal-600 px-2 py-1 text-[10px] font-medium text-teal-600 transition hover:bg-teal-50"
+                                        >
+                                          Đánh giá
+                                        </button>
+                                      )}
+                                    </div>
                                   </td>
                                 </tr>
                               ))}
@@ -322,6 +383,61 @@ export default function ProfilePage() {
             })
           )}
         </section>
+      )}
+
+      {/* ── Review Modal (Dark Mode) ── */}
+      {reviewModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-[#1a1a1a] p-6 shadow-2xl border border-white/10">
+            <h3 className="mb-2 text-xl font-black uppercase tracking-widest text-white">Đánh giá sản phẩm</h3>
+            <p className="mb-6 text-sm text-gray-400">{reviewModal.productName}</p>
+
+            <div className="mb-6 flex items-center justify-center gap-3">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setReviewForm((prev) => ({ ...prev, rating: star }))}
+                  className="p-1 transition-transform hover:scale-110 focus:outline-none"
+                >
+                  <Star
+                    className={`h-9 w-9 transition-colors ${
+                      star <= reviewForm.rating
+                        ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]"
+                        : "fill-transparent text-gray-600 hover:text-gray-500"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <div className="mb-8">
+              <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.15em] text-white">Nhận xét của bạn</label>
+              <textarea
+                value={reviewForm.comment}
+                onChange={(e) => setReviewForm((prev) => ({ ...prev, comment: e.target.value }))}
+                className="h-28 w-full rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white placeholder-gray-500 transition-all focus:border-[#b91c1c] focus:outline-none focus:ring-1 focus:ring-[#b91c1c]"
+                placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm..."
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setReviewModal({ isOpen: false })}
+                className="flex-[0.4] rounded-xl border border-white/10 bg-transparent py-3 text-sm font-bold uppercase tracking-wider text-gray-400 transition hover:bg-white/5 hover:text-white"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleSubmitReview}
+                disabled={submittingReview}
+                className="flex-1 rounded-xl bg-[#b91c1c] py-3 text-sm font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(185,28,28,0.2)] transition-all hover:bg-[#991b1b] hover:shadow-[0_0_25px_rgba(185,28,28,0.4)] disabled:opacity-50 active:scale-[0.98]"
+              >
+                {submittingReview ? "Đang gửi..." : "Gửi đánh giá"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

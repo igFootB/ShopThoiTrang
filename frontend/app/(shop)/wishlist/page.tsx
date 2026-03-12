@@ -28,7 +28,7 @@ export default function WishlistPage() {
   const handleRemove = (id: number) => {
     setRemovingId(id);
     setTimeout(() => {
-      setItems((prev) => prev.filter((item) => item.id !== id));
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
       setRemovingId(null);
     }, 300);
   };
@@ -98,12 +98,12 @@ export default function WishlistPage() {
                 >
                   {/* Sản phẩm */}
                   <div className="col-span-6 flex items-center gap-4">
-                    <Link href={`/product/${item.id}`} className="relative w-20 h-24 rounded-md overflow-hidden flex-shrink-0 bg-[#1a1a1a]">
+                    <div onClick={() => window.location.href = `/product/${item.id}`} className="relative w-20 h-24 rounded-md overflow-hidden flex-shrink-0 bg-[#1a1a1a] cursor-pointer">
                       <Image src={item.thumbnail} alt={item.tenSanPham} fill unoptimized className="object-cover hover:scale-105 transition-transform duration-500" />
-                    </Link>
-                    <Link href={`/product/${item.id}`} className="hover:text-gray-300 transition-colors">
+                    </div>
+                    <div onClick={() => window.location.href = `/product/${item.id}`} className="hover:text-gray-300 transition-colors cursor-pointer">
                       <h3 className="text-sm font-bold text-white leading-relaxed line-clamp-2">{item.tenSanPham}</h3>
-                    </Link>
+                    </div>
                   </div>
 
                   {/* Giá */}
@@ -121,20 +121,26 @@ export default function WishlistPage() {
 
                   {/* Thao tác */}
                   <div className="col-span-2 flex items-center justify-center gap-2">
-                    <Link
-                      href={`/product/${item.id}`}
-                      className="w-9 h-9 flex items-center justify-center rounded-md bg-[#b91c1c] text-white hover:bg-[#991b1b] transition-all"
+                    <button
+                      type="button"
+                      onClick={() => window.location.href = `/product/${item.id}`}
+                      className="w-9 h-9 flex items-center justify-center rounded-md bg-[#b91c1c] text-white hover:bg-[#991b1b] transition-all cursor-pointer relative z-40"
                       title="Xem sản phẩm"
                     >
-                      <ShoppingCart size={14} />
-                    </Link>
-                    <button
-                      onClick={() => handleRemove(item.id)}
-                      className="w-9 h-9 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:bg-red-500/10 hover:text-red-400 transition-all"
+                      <ShoppingCart size={14} className="pointer-events-none" />
+                    </button>
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log("Xóa Desktop => ID:", item.id);
+                        handleRemove(item.id);
+                      }}
+                      className="w-9 h-9 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:bg-red-500/10 hover:text-red-400 transition-all cursor-pointer relative z-[9999] pointer-events-auto"
                       title="Xoá khỏi yêu thích"
                     >
-                      <Trash2 size={14} />
-                    </button>
+                      <Trash2 size={14} className="pointer-events-none" />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -145,34 +151,40 @@ export default function WishlistPage() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className={`flex gap-4 bg-[#1a1a1a] rounded-xl p-4 border border-white/5 transition-all ${
+                  className={`flex gap-4 bg-[#1a1a1a] rounded-xl p-4 border border-white/5 transition-all relative ${
                     removingId === item.id ? "opacity-0 scale-95" : "opacity-100"
                   }`}
                   style={{ transition: "opacity 0.3s, transform 0.3s" }}
                 >
-                  <Link href={`/product/${item.id}`} className="relative w-20 h-24 rounded-md overflow-hidden flex-shrink-0 bg-[#222]">
+                  <div onClick={() => window.location.href = `/product/${item.id}`} className="relative w-20 h-24 rounded-md overflow-hidden flex-shrink-0 bg-[#222] cursor-pointer">
                     <Image src={item.thumbnail} alt={item.tenSanPham} fill unoptimized className="object-cover" />
-                  </Link>
+                  </div>
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
-                      <Link href={`/product/${item.id}`}>
+                      <div onClick={() => window.location.href = `/product/${item.id}`} className="cursor-pointer">
                         <h3 className="text-xs font-bold text-white leading-relaxed line-clamp-2">{item.tenSanPham}</h3>
-                      </Link>
+                      </div>
                       <p className="text-sm font-bold text-[#b91c1c] mt-1">{formatVND(item.gia)}</p>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                      <Link
-                        href={`/product/${item.id}`}
-                        className="flex-1 h-8 flex items-center justify-center gap-1.5 rounded-md bg-[#b91c1c] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#991b1b] transition-all"
-                      >
-                        <ShoppingCart size={12} /> Mua ngay
-                      </Link>
                       <button
-                        onClick={() => handleRemove(item.id)}
-                        className="w-8 h-8 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:text-red-400 transition-all"
+                        type="button"
+                        onClick={() => window.location.href = `/product/${item.id}`}
+                        className="flex-1 h-8 flex items-center justify-center gap-1.5 rounded-md bg-[#b91c1c] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#991b1b] transition-all cursor-pointer relative z-40"
                       >
-                        <Trash2 size={13} />
+                        <ShoppingCart size={12} className="pointer-events-none" /> Mua ngay
                       </button>
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log("Xóa Mobile => ID:", item.id);
+                          handleRemove(item.id);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:text-red-400 transition-all cursor-pointer relative z-[9999] pointer-events-auto"
+                      >
+                        <Trash2 size={13} className="pointer-events-none" />
+                      </div>
                     </div>
                   </div>
                 </div>
