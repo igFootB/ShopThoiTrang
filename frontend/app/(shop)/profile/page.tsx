@@ -180,24 +180,24 @@ export default function ProfilePage() {
   };
 
   const tabs = [
-    { key: "info" as const, label: "Thong tin ca nhan" },
-    { key: "orders" as const, label: "Lich su don hang" },
+    { key: "info" as const, label: "THÔNG TIN CÁ NHÂN" },
+    { key: "orders" as const, label: "LỊCH SỬ ĐƠN HÀNG" },
   ];
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <h1 className="text-3xl font-bold text-slate-900">Tai khoan cua toi</h1>
+      <h1 className="text-2xl md:text-3xl font-black uppercase tracking-widest text-white">Tài khoản của tôi</h1>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
+      <div className="flex gap-1 rounded-xl bg-white/5 p-1 border border-white/10">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
+            className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-wider transition ${
               activeTab === tab.key
-                ? "bg-white text-teal-700 shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-[#b91c1c] text-white shadow-lg shadow-[#b91c1c]/20"
+                : "text-gray-400 hover:text-white hover:bg-white/5"
             }`}
           >
             {tab.label}
@@ -207,29 +207,29 @@ export default function ProfilePage() {
 
       {/* ── Tab: Personal Info ── */}
       {activeTab === "info" && (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <section className="rounded-2xl border border-white/10 bg-[#1a1a1a] p-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">Ho ten</label>
+              <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.15em] text-gray-300">Họ tên</label>
               <input
                 type="text"
                 value={profile.ten}
                 onChange={(e) => setProfile((p) => ({ ...p, ten: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#b91c1c] focus:ring-1 focus:ring-[#b91c1c] focus:outline-none transition-all"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
+              <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.15em] text-gray-300">Email</label>
               <input
                 type="email"
                 value={profile.email}
                 disabled
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
+                className="w-full rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-sm text-gray-500 cursor-not-allowed"
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                So dien thoai
+              <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.15em] text-gray-300">
+                Số điện thoại
               </label>
               <input
                 type="tel"
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                 onChange={(e) =>
                   setProfile((p) => ({ ...p, soDienThoai: e.target.value }))
                 }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#b91c1c] focus:ring-1 focus:ring-[#b91c1c] focus:outline-none transition-all"
                 placeholder="0909 000 000"
               />
             </div>
@@ -247,8 +247,8 @@ export default function ProfilePage() {
             <p
               className={`mt-3 text-sm ${
                 saveMsg.includes("thanh cong")
-                  ? "text-emerald-600"
-                  : "text-rose-600"
+                  ? "text-emerald-400"
+                  : "text-red-400"
               }`}
             >
               {saveMsg}
@@ -258,9 +258,9 @@ export default function ProfilePage() {
           <button
             onClick={handleSaveProfile}
             disabled={saving}
-            className="mt-5 rounded-xl bg-accent px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover disabled:opacity-50"
+            className="mt-5 rounded-xl bg-[#b91c1c] px-6 py-2.5 text-sm font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(185,28,28,0.2)] transition-all hover:bg-[#991b1b] hover:shadow-[0_0_25px_rgba(185,28,28,0.4)] disabled:opacity-50 active:scale-[0.98]"
           >
-            {saving ? "Dang luu..." : "Luu thay doi"}
+            {saving ? "Đang lưu..." : "Lưu thay đổi"}
           </button>
         </section>
       )}
@@ -271,35 +271,35 @@ export default function ProfilePage() {
           {ordersLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-20 animate-pulse rounded-2xl bg-white" />
+                <div key={i} className="h-20 animate-pulse rounded-2xl bg-[#1a1a1a] border border-white/5" />
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
-              Ban chua co don hang nao.
+            <div className="rounded-2xl border border-white/10 bg-[#1a1a1a] p-8 text-center text-gray-500">
+              Bạn chưa có đơn hàng nào.
             </div>
           ) : (
             orders.map((order) => {
-              const statusStyle = STATUS_STYLES[order.trangThai] ?? "bg-slate-100 text-slate-800";
+              const statusStyle = STATUS_STYLES[order.trangThai] ?? "bg-white/10 text-gray-300";
               const statusLabel = STATUS_LABELS[order.trangThai] ?? order.trangThai;
               const isExpanded = expandedOrderId === order.id;
 
               return (
                 <div
                   key={order.id}
-                  className="rounded-2xl border border-slate-200 bg-white"
+                  className="rounded-2xl border border-white/10 bg-[#1a1a1a]"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3 p-5">
                     <div>
-                      <p className="font-semibold text-slate-900">
+                      <p className="font-bold text-white">
                         #{order.maDonHang ?? order.id}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-gray-500">
                         {new Date(order.ngayDat).toLocaleDateString("vi-VN")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-amber-600">
+                      <span className="font-bold text-[#b91c1c]">
                         {formatVND(order.tongTien)}
                       </span>
                       <span
@@ -309,41 +309,41 @@ export default function ProfilePage() {
                       </span>
                       <button
                         onClick={() => handleToggleDetails(order.id)}
-                        className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold text-gray-300 transition hover:bg-white/5 hover:text-white"
                       >
-                        {isExpanded ? "An chi tiet" : "Xem chi tiet"}
+                        {isExpanded ? "Ẩn chi tiết" : "Xem chi tiết"}
                       </button>
                     </div>
                   </div>
 
                   {isExpanded && (
-                    <div className="border-t border-slate-100 px-5 pb-5 pt-3">
+                    <div className="border-t border-white/10 px-5 pb-5 pt-3">
                       {orderDetails[order.id] ? (
                         orderDetails[order.id].length > 0 ? (
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="border-b border-slate-100 text-left text-xs text-slate-500">
-                                <th className="pb-2">San pham</th>
-                                <th className="pb-2">Size / Mau</th>
+                              <tr className="border-b border-white/10 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                <th className="pb-2">Sản phẩm</th>
+                                <th className="pb-2">Size / Màu</th>
                                 <th className="pb-2 text-center">SL</th>
-                                <th className="pb-2 text-right">Gia</th>
+                                <th className="pb-2 text-right">Giá</th>
                               </tr>
                             </thead>
                             <tbody>
                               {orderDetails[order.id].map((item) => (
                                 <tr
                                   key={item.id}
-                                  className="border-b border-slate-50"
+                                  className="border-b border-white/5"
                                 >
-                                  <td className="py-2 font-medium text-slate-900">
+                                  <td className="py-2 font-medium text-white">
                                     {item.tenSanPham}
                                   </td>
-                                  <td className="py-2 text-slate-600">
+                                  <td className="py-2 text-gray-400">
                                     {item.size} / {item.mauSac}
                                   </td>
-                                  <td className="py-2 text-center">{item.soLuong}</td>
+                                  <td className="py-2 text-center text-gray-300">{item.soLuong}</td>
                                   <td className="py-2 text-right">
-                                    <div className="flex flex-col items-end gap-2 text-amber-600">
+                                    <div className="flex flex-col items-end gap-2 text-[#b91c1c]">
                                       <span>{formatVND(item.gia * item.soLuong)}</span>
                                       {(order.trangThai === "DELIVERED" || order.trangThai === "Hoàn thành" || order.trangThai === "Đã giao") && (
                                         <button
@@ -357,7 +357,7 @@ export default function ProfilePage() {
                                             });
                                             setReviewForm({ rating: 5, comment: "" });
                                           }}
-                                          className="rounded border border-teal-600 px-2 py-1 text-[10px] font-medium text-teal-600 transition hover:bg-teal-50"
+                                          className="rounded border border-[#b91c1c]/50 px-2 py-1 text-[10px] font-bold text-[#b91c1c] uppercase tracking-wider transition hover:bg-[#b91c1c] hover:text-white"
                                         >
                                           Đánh giá
                                         </button>
@@ -369,12 +369,12 @@ export default function ProfilePage() {
                             </tbody>
                           </table>
                         ) : (
-                          <p className="text-sm text-slate-500">
-                            Khong co chi tiet don hang.
+                          <p className="text-sm text-gray-500">
+                            Không có chi tiết đơn hàng.
                           </p>
                         )
                       ) : (
-                        <p className="text-sm text-slate-500">Dang tai...</p>
+                        <p className="text-sm text-gray-500">Đang tải...</p>
                       )}
                     </div>
                   )}

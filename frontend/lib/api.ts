@@ -132,3 +132,26 @@ export const adminApi = {
   updateCoupon: (id: number, data: any) => api.put(`/admin/coupons/${id}`, data),
   deleteCoupon: (id: number) => api.delete(`/admin/coupons/${id}`),
 };
+
+/* ── Tracking API: ghi hành vi người dùng (cần đăng nhập) ── */
+export const trackingApi = {
+  logBehavior: (productId: number, loaiHanhVi: string) =>
+    api.post("/tracking/behavior", { productId, loaiHanhVi }).catch(() => {
+      // Silent fail — tracking không nên ảnh hưởng UX
+    }),
+};
+
+/* ── Recommendation API: gợi ý AI ── */
+export const recommendationApi = {
+  getRecommendations: () => api.get("/recommendations"),
+  getSimilarProducts: (productId: number, limit: number = 8) =>
+    publicApi.get(`/recommendations/similar/${productId}`, { params: { limit } }),
+};
+
+/* ── Wishlist API ── */
+export const wishlistApi = {
+  getWishlist: () => api.get("/wishlist"),
+  addToWishlist: (productId: number) => api.post(`/wishlist/add/${productId}`),
+  removeFromWishlist: (productId: number) => api.delete(`/wishlist/remove/${productId}`),
+  checkFavorite: (productId: number) => api.get(`/wishlist/check/${productId}`),
+};

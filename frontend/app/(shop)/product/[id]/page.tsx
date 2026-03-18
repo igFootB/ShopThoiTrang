@@ -7,6 +7,9 @@ import { useMemo, useState, useEffect } from "react";
 import { api, publicApi } from "@/lib/api";
 import { formatVND } from "@/lib/utils";
 import { useCart } from "@/components/providers/CartProvider";
+import { trackView, trackAddToCart, trackWishlist } from "@/hooks/useTracking";
+import { useWishlist } from "@/components/providers/WishlistProvider";
+import SimilarProducts from "@/components/ui/SimilarProducts";
 import { Heart, ShoppingCart, Truck, RotateCcw, Shield, ChevronRight, Minus, Plus, Check, Zap, Star } from "lucide-react";
 
 type ImageItem = {
@@ -61,6 +64,9 @@ export default function ProductDetailPage() {
   const [reviewsData, setReviewsData] = useState<ProductReviews | null>(null);
   const [reviewsLoading, setReviewsLoading] = useState(false);
 
+  const { isInWishlist, toggleWishlist, isLoading: wishlistLoading } = useWishlist();
+  const isFavorite = isInWishlist(productId);
+
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
@@ -90,8 +96,16 @@ export default function ProductDetailPage() {
     if (!Number.isNaN(productId)) {
       fetchProductDetail();
       fetchReviews();
+      // Tracking: ghi nhận hành vi VIEW
+      trackView(productId);
     }
   }, [productId]);
+
+  const handleToggleWishlist = async () => {
+    await toggleWishlist(productId);
+    // Tracking: Ghi nhận hành vi WISHLIST
+    trackWishlist(productId);
+  };
 
   const sizeOptions = useMemo(() => {
     if (!product) return [];
@@ -157,6 +171,8 @@ export default function ProductDetailPage() {
       await api.post("/cart/add", { variantId: selectedVariant.id, soLuong: quantity });
       increaseCartCount(quantity);
       await refreshCartCount();
+      // Tracking: ghi nhận hành vi ADD_TO_CART
+      trackAddToCart(productId);
       setAddedSuccess(true);
       setTimeout(() => setAddedSuccess(false), 2000);
     } catch {
@@ -402,8 +418,17 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Yêu thích */}
-                <button className="w-12 h-12 flex items-center justify-center rounded-md border border-white/15 text-gray-400 hover:text-[#b91c1c] hover:border-[#b91c1c] transition-all flex-shrink-0">
-                  <Heart size={20} />
+                <button 
+                  onClick={handleToggleWishlist}
+                  disabled={wishlistLoading}
+                  className={`w-12 h-12 flex items-center justify-center rounded-md border transition-all flex-shrink-0 ${
+                    isFavorite 
+                      ? "border-[#b91c1c] text-[#b91c1c] bg-[#b91c1c]/5" 
+                      : "border-white/15 text-gray-400 hover:text-[#b91c1c] hover:border-[#b91c1c]"
+                  }`}
+                  title={isFavorite ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
+                >
+                  <Heart size={20} fill={isFavorite ? "#b91c1c" : "none"} className={wishlistLoading ? "animate-pulse" : ""} />
                 </button>
               </div>
 
@@ -520,6 +545,9 @@ export default function ProductDetailPage() {
              </div>
           )}
         </div>
+
+        {/* ── SẢN PHẨM TƯƠNG TỰ (AI) ── */}
+        <SimilarProducts productId={productId} />
         
       </div>
     </div>

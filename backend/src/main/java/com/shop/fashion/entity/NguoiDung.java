@@ -22,6 +22,7 @@ public class NguoiDung {
     private String email;
 
     @Column(name = "mat_khau")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String matKhau;
 
     @Column(name = "so_dien_thoai", length = 20)

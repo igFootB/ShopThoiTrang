@@ -6,6 +6,7 @@ import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
 import HeroSlider from "@/components/ui/HeroSlider";
 import HighlightCollection from "@/components/ui/HighlightCollection";
+import RecommendedProducts from "@/components/ui/RecommendedProducts";
 import { publicProductsApi, publicCategoriesApi } from "@/lib/api";
 
 // Helper: loại bỏ sản phẩm trùng ID
@@ -101,6 +102,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── AI GỢI Ý CHO BẠN ── */}
+      <RecommendedProducts />
 
       {/* ── Brand Separator ── */}
       <div className="w-full text-center mb-10 mt-20">

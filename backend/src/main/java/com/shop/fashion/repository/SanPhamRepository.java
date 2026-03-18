@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface SanPhamRepository extends JpaRepository<SanPham, Long> {
     List<SanPham> findByDanhMucId(Long danhMucId);
+    Page<SanPham> findByDanhMucIdAndTrangThaiAndIdNot(Long danhMucId, Integer trangThai, Long excludeId, Pageable pageable);
     
     long countByDanhMucId(Long danhMucId);
     @Query("SELECT new com.shop.fashion.dto.response.ProductListResponse(" +

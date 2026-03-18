@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, ShoppingCart } from "lucide-react";
 import { formatVND } from "@/lib/utils";
- 
+import { useWishlist } from "@/components/providers/WishlistProvider";
+
 export type ProductListItem = {
   id: number;
   tenSanPham: string;
@@ -17,8 +18,17 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isFav = isInWishlist(product.id);
+
   // Use a tall portrait placeholder to match the design
   const image = product.thumbnail || `https://placehold.co/600x900/f3f4f6/333333?text=${encodeURIComponent(product.tenSanPham)}`;
+
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product.id);
+  };
 
   return (
     <article className="group flex flex-col cursor-pointer border border-[#333] hover:border-gray-500 transition-colors bg-[#1a1a1a] p-2">
@@ -26,7 +36,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product.id}`} className="block w-full h-full">
           <Image
             src={image}
-            alt={product.tenSanPham}
+            alt={product.tenSanPham || "Product image"}
             fill
             unoptimized
             className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -43,8 +53,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between mt-1">
           <p className="text-sm xl:text-[15px] font-bold text-white tracking-widest">{formatVND(product.gia)}</p>
           <div className="flex gap-2">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 bg-white/5 hover:bg-[#b91c1c] hover:text-white transition-all">
-              <Heart size={14} strokeWidth={2} />
+            <button 
+              onClick={handleHeartClick}
+              className={`w-8 h-8 flex items-center justify-center rounded-full transition-all ${
+                isFav 
+                  ? "bg-[#b91c1c] text-white" 
+                  : "text-gray-400 bg-white/5 hover:bg-[#b91c1c] hover:text-white"
+              }`}
+            >
+              <Heart size={14} strokeWidth={2} fill={isFav ? "white" : "none"} />
             </button>
             <button className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 bg-white/5 hover:bg-[#b91c1c] hover:text-white transition-all">
               <ShoppingCart size={14} strokeWidth={2} />

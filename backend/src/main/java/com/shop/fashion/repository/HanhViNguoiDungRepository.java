@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface HanhViNguoiDungRepository extends JpaRepository<HanhViNguoiDung, Long> {
     List<HanhViNguoiDung> findByNguoiDungId(Long nguoiDungId);
+    List<HanhViNguoiDung> findByNguoiDungIdOrderByThoiGianDesc(Long nguoiDungId);
 }

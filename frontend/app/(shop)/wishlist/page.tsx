@@ -2,36 +2,93 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { Heart, ShoppingCart, Trash2, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Heart, ShoppingCart, Trash2, ChevronRight, Loader2 } from "lucide-react";
 import { formatVND } from "@/lib/utils";
+import { wishlistApi } from "@/lib/api";
+import { useWishlist } from "@/components/providers/WishlistProvider";
 
 type WishlistItem = {
-  id: number;
+  id: number; // This is productId
+  favoriteId: number; // This is the ID of SanPhamYeuThich record
   tenSanPham: string;
   gia: number;
   thumbnail: string;
 };
 
-/* ─── Dữ liệu mẫu yêu thích ─── */
-const INITIAL_WISHLIST: WishlistItem[] = [
-  { id: 101, tenSanPham: "Áo Polo Nam Form Vừa Thoải Mái", gia: 450000, thumbnail: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=400&auto=format&fit=crop" },
-  { id: 103, tenSanPham: "Quần Jeans Nam Dáng Suông", gia: 750000, thumbnail: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=400&auto=format&fit=crop" },
-  { id: 201, tenSanPham: "Đầm Xòe Nữ Dáng Dài Thanh Lịch", gia: 850000, thumbnail: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400&auto=format&fit=crop" },
-  { id: 104, tenSanPham: "Áo Khoác Nam Phom Dài Thanh Lịch", gia: 1250000, thumbnail: "https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=400&auto=format&fit=crop" },
-];
-
 export default function WishlistPage() {
-  const [items, setItems] = useState<WishlistItem[]>(INITIAL_WISHLIST);
+  const [items, setItems] = useState<WishlistItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [removingId, setRemovingId] = useState<number | null>(null);
+  const { refreshWishlist, toggleWishlist } = useWishlist();
 
-  const handleRemove = (id: number) => {
-    setRemovingId(id);
-    setTimeout(() => {
-      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-      setRemovingId(null);
-    }, 300);
+  useEffect(() => {
+    fetchWishlist();
+  }, []);
+
+  const fetchWishlist = async () => {
+    try {
+      setLoading(true);
+      const response = await wishlistApi.getWishlist();
+      // Map backend SanPhamYeuThich to WishlistItem
+      const mappedItems = response.data.map((item: any) => {
+        const product = item.sanPham;
+        const thumbnail = product.listHinhAnh?.find((img: any) => img.isThumbnail === 1)?.duongDanAnh 
+          || "https://placehold.co/400x600?text=No+Image";
+        
+        return {
+          id: product.id,
+          favoriteId: item.id,
+          tenSanPham: product.tenSanPham,
+          gia: product.gia,
+          thumbnail: thumbnail
+        };
+      });
+      setItems(mappedItems);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách yêu thích:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleRemove = async (productId: number) => {
+    try {
+      setRemovingId(productId);
+      await toggleWishlist(productId); // This updates global state
+      setTimeout(() => {
+        setItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+        setRemovingId(null);
+      }, 300);
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm yêu thích:", error);
+      setRemovingId(null);
+    }
+  };
+
+  const handleRemoveAll = async () => {
+    if (!confirm("Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi danh sách yêu thích?")) return;
+    
+    try {
+      // Vì backend chưa có endpoint xóa tất cả, ta xóa từng cái hoặc chờ update backend
+      // Ở đây ta xóa từng cái để đảm bảo tính năng hoạt động ngay
+      for (const item of items) {
+        await toggleWishlist(item.id);
+      }
+      setItems([]);
+    } catch (error) {
+      console.error("Lỗi khi xóa tất cả:", error);
+      alert("Có lỗi xảy ra khi xóa danh sách.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-[#111] w-full min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-[#b91c1c] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#111] w-full min-h-screen">
@@ -133,7 +190,6 @@ export default function WishlistPage() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log("Xóa Desktop => ID:", item.id);
                         handleRemove(item.id);
                       }}
                       className="w-9 h-9 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:bg-red-500/10 hover:text-red-400 transition-all cursor-pointer relative z-[9999] pointer-events-auto"
@@ -172,13 +228,12 @@ export default function WishlistPage() {
                         onClick={() => window.location.href = `/product/${item.id}`}
                         className="flex-1 h-8 flex items-center justify-center gap-1.5 rounded-md bg-[#b91c1c] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#991b1b] transition-all cursor-pointer relative z-40"
                       >
-                        <ShoppingCart size={12} className="pointer-events-none" /> Mua ngay
+                        <ShoppingCart size={12} className="pointer-events-none" /> Xem ngay
                       </button>
                       <div
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("Xóa Mobile => ID:", item.id);
                           handleRemove(item.id);
                         }}
                         className="w-8 h-8 flex items-center justify-center rounded-md bg-white/5 text-gray-500 hover:text-red-400 transition-all cursor-pointer relative z-[9999] pointer-events-auto"
@@ -200,7 +255,7 @@ export default function WishlistPage() {
                 ← Tiếp tục mua sắm
               </Link>
               <button
-                onClick={() => setItems([])}
+                onClick={handleRemoveAll}
                 className="text-[11px] font-bold text-gray-500 hover:text-red-400 uppercase tracking-widest transition-colors"
               >
                 Xoá tất cả yêu thích

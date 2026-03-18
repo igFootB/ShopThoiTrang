@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface GoiYSanPhamRepository extends JpaRepository<GoiYSanPham, Long> {
     List<GoiYSanPham> findByNguoiDungId(Long nguoiDungId);
+    List<GoiYSanPham> findByNguoiDungIdOrderByDiemGoiYDesc(Long nguoiDungId);
+    void deleteByNguoiDungId(Long nguoiDungId);
 }

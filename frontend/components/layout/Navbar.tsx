@@ -21,7 +21,6 @@ const DEFAULT_NAV_LINKS: NavLink[] = [
   { label: "THỜI TRANG NAM", href: "/category/nam" },
   { label: "THỜI TRANG NỮ", href: "/category/nu" },
   { label: "TIN TỨC", href: "/blog" },
-  { label: "CỬA HÀNG", href: "/stores" },
 ];
 
 
@@ -130,7 +129,7 @@ export default function Navbar() {
       try {
         const res = await publicCategoriesApi.getCategories();
         const cats: any[] = res.data;
-        
+
         const activeCats = cats.filter(c => c.trangThai === 1);
 
         const namChildren = activeCats.filter(c => c.gioiTinh === "NAM").map(c => ({
@@ -142,7 +141,7 @@ export default function Navbar() {
           label: c.tenDanhMuc,
           href: `/category/${c.id}`
         }));
-        
+
         const unisexChildren = activeCats.filter(c => c.gioiTinh === "UNISEX").map(c => ({
           label: c.tenDanhMuc,
           href: `/category/${c.id}`
@@ -150,13 +149,13 @@ export default function Navbar() {
 
         const dynamicLinks: NavLink[] = [
           { label: "TRANG CHỦ", href: "/" },
-          { 
-            label: "THỜI TRANG NAM", 
+          {
+            label: "THỜI TRANG NAM",
             href: "/category/nam",
             children: namChildren.length > 0 ? namChildren : undefined
           },
-          { 
-            label: "THỜI TRANG NỮ", 
+          {
+            label: "THỜI TRANG NỮ",
             href: "/category/nu",
             children: nuChildren.length > 0 ? nuChildren : undefined
           },
@@ -171,7 +170,6 @@ export default function Navbar() {
         }
 
         dynamicLinks.push({ label: "TIN TỨC", href: "/blog" });
-        dynamicLinks.push({ label: "CỬA HÀNG", href: "/stores" });
 
         setNavLinks(dynamicLinks);
       } catch (error) {
@@ -192,7 +190,7 @@ export default function Navbar() {
     try {
       await api.delete(`/cart/remove/${variantId}`);
       await fetchCartItems();
-    } catch (e) { 
+    } catch (e) {
       console.error(e);
     }
   };
@@ -206,7 +204,7 @@ export default function Navbar() {
 
   const isTransparent = isHomePage && !isScrolled;
 
-  const headerBgClass = isTransparent 
+  const headerBgClass = isTransparent
     ? "bg-transparent shadow-none border-b-0"
     : "bg-[#111] shadow-lg";
 
@@ -233,7 +231,7 @@ export default function Navbar() {
               </button>
 
               <Link href="/" className="flex items-center">
-                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>GIA BAO STORE</span>
+                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>BAO FASHION</span>
               </Link>
             </div>
 
@@ -246,11 +244,10 @@ export default function Navbar() {
                   <div key={link.label} className="group flex items-center px-1 relative h-full">
                     <Link
                       href={link.href}
-                      className={`relative py-1 text-sm font-bold uppercase tracking-[0.05em] xl:tracking-[0.1em] flex items-center gap-1 whitespace-nowrap transition-colors ${
-                        isActive 
-                          ? (isTransparent ? "text-black" : "text-white") 
-                          : (isTransparent ? "text-gray-600 hover:text-black" : "text-gray-400 hover:text-white")
-                      }`}
+                      className={`relative py-1 text-sm font-bold uppercase tracking-[0.05em] xl:tracking-[0.1em] flex items-center gap-1 whitespace-nowrap transition-colors ${isActive
+                        ? (isTransparent ? "text-black" : "text-white")
+                        : (isTransparent ? "text-gray-600 hover:text-black" : "text-gray-400 hover:text-white")
+                        }`}
                     >
                       {link.label}
                       {link.children && <ChevronDown size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />}
@@ -266,7 +263,7 @@ export default function Navbar() {
                       <div className="absolute top-full left-0 pt-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-out z-50 min-w-[220px]">
                         {/* Bridge */}
                         <div className="w-full h-4 bg-transparent absolute top-0 -translate-y-full" />
-                        
+
                         <div className="bg-white border border-gray-100 mt-2 shadow-xl flex flex-col py-2 border-t-[3px] border-t-[#b91c1c]">
                           {link.children.map(child => (
                             <Link

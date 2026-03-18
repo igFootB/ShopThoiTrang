@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/components/providers/CartProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { WishlistProvider } from "@/components/providers/WishlistProvider";
 
 export const metadata: Metadata = {
   title: "Shop Thoi Trang",
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="vi">
       <body className="antialiased">
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            <WishlistProvider>{children}</WishlistProvider>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

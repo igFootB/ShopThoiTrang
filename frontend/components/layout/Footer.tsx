@@ -14,7 +14,7 @@ export default function Footer() {
               <li><Link href="#" className="hover:text-white transition-colors">Câu chuyện thương hiệu</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Tin tức & Sự kiện</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Tuyển dụng</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Hệ thống cửa hàng</Link></li>
+
             </ul>
           </div>
 
