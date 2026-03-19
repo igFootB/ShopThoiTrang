@@ -185,8 +185,10 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <h1 className="text-2xl md:text-3xl font-black uppercase tracking-widest text-white">Tài khoản của tôi</h1>
+    <div className="mx-auto max-w-4xl space-y-6 pt-10 pb-20">
+      <h1 className="text-2xl md:text-3xl font-black uppercase tracking-widest text-white text-center pb-4">
+        Tài khoản của tôi
+      </h1>
 
       {/* ── Tabs ── */}
       <div className="flex gap-1 rounded-xl bg-white/5 p-1 border border-white/10">

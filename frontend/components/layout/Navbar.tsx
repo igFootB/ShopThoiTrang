@@ -198,7 +198,8 @@ export default function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log("Searching for:", searchQuery);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
     }
   };
 
@@ -231,7 +232,7 @@ export default function Navbar() {
               </button>
 
               <Link href="/" className="flex items-center">
-                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>BAO FASHION</span>
+                <span className={`${isTransparent ? "text-black" : "text-white"} font-serif font-black text-2xl tracking-widest uppercase transition-colors`}>GIA BAO STORE</span>
               </Link>
             </div>
 

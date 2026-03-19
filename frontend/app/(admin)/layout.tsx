@@ -145,9 +145,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {/* Logo Area */}
         <div className="flex h-16 shrink-0 items-center justify-center gap-3 border-b border-gray-100 px-6">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-            <span className="text-sm font-bold">JH</span>
+            <span className="text-sm font-bold">BS</span>
           </div>
-          <span className="text-lg font-bold tracking-tight text-gray-900">Admin Portal</span>
+          <span className="text-lg font-bold tracking-tight text-gray-900">BAO STORE</span>
         </div>
 
         {/* Navigation */}

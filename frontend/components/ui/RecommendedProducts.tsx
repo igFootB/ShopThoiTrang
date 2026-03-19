@@ -42,17 +42,10 @@ export default function RecommendedProducts() {
   return (
     <section className="w-full max-w-[1200px] mx-auto px-4 mb-16">
       {/* Header */}
-      <div className="text-center mb-10">
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-2xl">✨</span>
-          <h2 className="text-xl md:text-2xl font-black tracking-widest uppercase">
-            GỢI Ý CHO BẠN
-          </h2>
-          <span className="text-2xl">✨</span>
-        </div>
-        <p className="text-xs text-gray-400 tracking-wider uppercase">
-          AI-Powered — Dựa trên sở thích cá nhân
-        </p>
+      <div className="w-full text-center mb-10 mt-10">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-widest uppercase">
+          GỢI Ý CHO BẠN
+        </h2>
       </div>
 
       {/* Loading skeleton */}

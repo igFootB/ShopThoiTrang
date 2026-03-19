@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { adminApi } from "@/lib/api";
 import { TrendingUp, Users, ShoppingCart, Package } from "lucide-react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState<any>(null);

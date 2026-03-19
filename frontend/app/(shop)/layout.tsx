@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import Chatbot from "@/components/chat/Chatbot";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +12,6 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
       */}
       <main className="w-full pt-28">{children}</main>
       <Footer />
-      <Chatbot />
     </div>
   );
 }
