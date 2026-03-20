@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_HOST = os.getenv("REDIS_HOST", os.getenv("SPRING_DATA_REDIS_HOST", "localhost"))
+REDIS_PORT = int(os.getenv("REDIS_PORT", os.getenv("SPRING_DATA_REDIS_PORT", "6379")))
 
 # TTL 24 giờ
 CACHE_TTL = 60 * 60 * 24

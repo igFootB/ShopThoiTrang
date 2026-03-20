@@ -2,17 +2,26 @@
 database.py — Kết nối MySQL, đọc dữ liệu hành vi & sản phẩm
 """
 import os
+import re
 import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "shop_thoi_trang")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "123456")
+# Fallback cho Spring Boot Variables nếu người dùng đã nhập bên Render
+spring_url = os.getenv("SPRING_DATASOURCE_URL", "")
+db_host, db_port, db_name = "localhost", "3306", "shop_thoi_trang"
+if spring_url.startswith("jdbc:mysql://"):
+    match = re.search(r"jdbc:mysql://([^:]+):(\d+)/([^?]+)", spring_url)
+    if match:
+        db_host, db_port, db_name = match.group(1), match.group(2), match.group(3)
+
+DB_HOST = os.getenv("DB_HOST", db_host)
+DB_PORT = os.getenv("DB_PORT", db_port)
+DB_NAME = os.getenv("DB_NAME", db_name)
+DB_USER = os.getenv("DB_USER", os.getenv("SPRING_DATASOURCE_USERNAME", "root"))
+DB_PASSWORD = os.getenv("DB_PASSWORD", os.getenv("SPRING_DATASOURCE_PASSWORD", "123456"))
 
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 

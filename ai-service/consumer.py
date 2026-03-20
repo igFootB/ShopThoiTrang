@@ -9,10 +9,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
-RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT", "5672"))
-RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
-RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
+RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", os.getenv("SPRING_RABBITMQ_HOST", "localhost"))
+RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT", os.getenv("SPRING_RABBITMQ_PORT", "5672")))
+RABBITMQ_USER = os.getenv("RABBITMQ_USER", os.getenv("SPRING_RABBITMQ_USERNAME", "guest"))
+RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", os.getenv("SPRING_RABBITMQ_PASSWORD", "guest"))
 
 QUEUE_NAME = "behavior.events"
 
