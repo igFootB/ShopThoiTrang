@@ -183,9 +183,9 @@ Nền tảng tốt nhất: **Vercel**
 ---
 🔑 Tài Khoản Dùng Thử
 
-Vai trò Tên hiển thị Email Mật khẩu
-Quản trị viên (Admin) admintest bao@gmail.com/123456.
-Khách hàng Nguyễn Vỹ Khang vykhang@gmail.com/123456.
+- **Quản trị viên (Admin):** admintest — `bao@gmail.com` / `123456`
+- **Khách hàng:** Nguyễn Vỹ Khang — `vykhang@gmail.com` / `123456`
+
 ## 👨‍💻 Tác giả / Nhóm Đồ án
 Phát triển bởi Đường Gia Bảo (225640) phục vụ Đồ án 2 và học thuật mở e-commerce architectures.
 Vui lòng tham khảo mã nguồn các thành phần như Wishlist, Dark Mode Layout và RabbitMQ Consumer Python ở lịch sử Commit chi tiết.
