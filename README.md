@@ -1,5 +1,11 @@
 # 🛍️ Shop Thời Trang - Đồ Án E-Commerce Hoàn Chỉnh
 
+**🌍 Live Demo (Website đã triển khai): [https://shop-thoi-trang-sand.vercel.app/](https://shop-thoi-trang-sand.vercel.app/)**
+
+**🔐 Tài khoản dùng thử (Test Accounts):**
+- **Admin**: Email: `bao@gmail.com` | Pass: `123456`
+- **Khách hàng (User)**: Email: `nghi@gmail.com` | Pass: `123456`
+
 Đây là kho lưu trữ mã nguồn cho **Shop Thời Trang**, một hệ thống thương mại điện tử chuyên cung cấp quần áo Nam, Nữ, Bộ sưu tập Lookbook, và Mix & Match. Hệ thống được xây dựng theo kiến trúc Microservices hiện đại, hỗ trợ Gợi ý Sản phẩm thông minh (AI/Collaborative Filtering), cổng thanh toán VNPAY, cùng hệ thống quản trị nội dung chi tiết.
 
 ## 🌟 Điểm nổi bật & Các Tính năng chính

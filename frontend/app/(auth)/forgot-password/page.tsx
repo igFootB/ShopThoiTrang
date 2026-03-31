@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
         {/* Logo */}
         <div className="absolute top-10 left-10 z-10">
           <Link href="/" className="text-white font-serif font-black text-2xl tracking-widest uppercase">
-            JOHN HENRY
+            GIA BAO STORE
           </Link>
         </div>
 
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           {/* Logo mobile */}
           <div className="lg:hidden text-center mb-10">
             <Link href="/" className="text-white font-serif font-black text-2xl tracking-widest uppercase">
-              JOHN HENRY
+              GIA BAO STORE
             </Link>
           </div>
 
