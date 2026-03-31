@@ -6,7 +6,7 @@
 - **Admin**: Email: `bao@gmail.com` | Pass: `123456`
 - **Khách hàng (User)**: Email: `nghi@gmail.com` | Pass: `123456`
 
-Đây là kho lưu trữ mã nguồn cho **Shop Thời Trang**, một hệ thống thương mại điện tử chuyên cung cấp quần áo Nam, Nữ, Bộ sưu tập Lookbook, và Mix & Match. Hệ thống được xây dựng theo kiến trúc Microservices hiện đại, hỗ trợ Gợi ý Sản phẩm thông minh (AI/Collaborative Filtering), cổng thanh toán VNPAY, cùng hệ thống quản trị nội dung chi tiết.
+Đây là kho lưu trữ mã nguồn cho **Shop Thời Trang**, một hệ thống thương mại điện tử chuyên cung cấp quần áo Nam, Nữ. Hệ thống được xây dựng theo kiến trúc Microservices hiện đại, hỗ trợ Gợi ý Sản phẩm thông minh (AI/Collaborative Filtering), cổng thanh toán VNPAY, cùng hệ thống quản trị nội dung chi tiết.
 
 ## 🌟 Điểm nổi bật & Các Tính năng chính
 
@@ -16,12 +16,10 @@
 - **Quản lý Giỏ Hàng & Yêu Thích (Cart & Wishlist):** Thêm, xóa linh hoạt sản phẩm yêu thích và lưu trữ giỏ hàng, cập nhật state đồng bộ qua API.
 - **Thanh toán Trực Tuyến & COD:** Hỗ trợ quy trình thanh toán đầy đủ, tự động chuyển hướng cổng VNPAY an toàn.
 - **Quản lý Tài khoản (Profile & Order History):** Theo dõi trạng thái đơn mua hàng. Tính năng Profile có hỗ trợ giao diện **Dark Mode** hoàn chỉnh.
-- **Lookbook & Blog:** Tích hợp bộ sưu tập theo mùa nổi bật với thư viện ảnh Lookbook chuyên nghiệp.
 
 ### 🛠 2. Dành cho Quản trị viên (Admin & Dashboard)
 - **Admin Portal (Bảng điều khiển):** Thống kê và theo dõi tổng quan các dữ liệu về doanh thu/đơn hàng.
 - **Quản lý Sản phẩm / Danh mục / Hero Slider:** Thêm, xem, sửa, và xóa mọi thuộc tính của sản phẩm.
-- **Quản lý Lookbook & Hình ảnh:** Tạo và thay thế các ảnh quảng cáo trên giao diện "Lookbook" và "Mix & Match".
 - **Quản lý Đơn hàng & Thanh toán:** Duyệt đơn, cập nhật trạng thái gói hàng và tình trạng của VNPAY.
 
 ---
@@ -189,5 +187,5 @@ Nền tảng tốt nhất: **Vercel**
 ---
 
 ## 👨‍💻 Tác giả / Nhóm Đồ án
-Phát triển bởi Dương Gia Bảo (225640) phục vụ Đồ án 2 và học thuật mở e-commerce architectures.
+Phát triển bởi Đường Gia Bảo (225640) phục vụ Đồ án 2 và học thuật mở e-commerce architectures.
 Vui lòng tham khảo mã nguồn các thành phần như Wishlist, Dark Mode Layout và RabbitMQ Consumer Python ở lịch sử Commit chi tiết.
